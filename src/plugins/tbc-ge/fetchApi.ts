@@ -137,7 +137,7 @@ export async function fetchLoginByPasscodeV2 (auth: AuthV2, deviceInfo: DeviceIn
   return loginResponse
 }
 
-export async function fetchCertifyLoginByOtpDeviceV2 (code: string, transactionId: string, otpDevice: OtpDeviceV2): Promise<string[]> {
+export async function fetchCertifyLoginByOtpDeviceV2 (code: string, transactionId: string, otpDevice: OtpDeviceV2, otpId: string): Promise<string[]> {
   const body = {
     transactionId,
     language: 'en',
@@ -145,7 +145,7 @@ export async function fetchCertifyLoginByOtpDeviceV2 (code: string, transactionI
       response: code,
       status: 'CHALLENGE',
       type: otpDevice,
-      otpId: 'NONE'
+      otpId
     }
   }
   const url = 'https://rmbgwauth.tbconline.ge/v1/auth/certifyLogin'
