@@ -219,7 +219,7 @@ export async function fetchGetSessionIdV2 (cookies: string[]): Promise<string | 
  * @param auth
  * @return registrationId
  */
-export async function fetchRegisterDeviceV2 (auth: { deviceName: string, passcode: string, deviceId: string }): Promise<string> {
+export async function fetchRegisterDeviceV2 (auth: { deviceName: string, passcode: string, deviceId: string }, cookies: string[]): Promise<string> {
   const body = {
     ...auth,
     passcodeType: 'NUMERIC_PASSCODE'
@@ -229,7 +229,8 @@ export async function fetchRegisterDeviceV2 (auth: { deviceName: string, passcod
     body,
     headers: {
       'User-Agent': `TBC a${APP_VERSION} (Android; Android ${OS_VERSION}; ANDROID_PHONE)`,
-      'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': 'application/json; charset=UTF-8',
+      ...(cookies.length > 0 ? { Cookie: cookies.join('; ') } : {})
     },
     method: 'POST',
     stringify: JSON.stringify,
