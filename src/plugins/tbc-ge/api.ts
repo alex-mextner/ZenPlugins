@@ -93,7 +93,7 @@ function generateDeviceData (deviceInfo: DeviceInfo): DeviceData {
 function getOtpIdForDevice (loginInfo: LoginResponse, device: OtpDeviceV2): string {
   if (loginInfo.signatures != null) {
     const match = loginInfo.signatures.find(s => s.type === device)
-    if (match != null && match.otpId != null && match.otpId !== '') {
+    if (match?.otpId != null && match.otpId !== '') {
       return match.otpId
     }
   }

@@ -7,7 +7,7 @@ const AUTH = { deviceName: 'TestPhone', passcode: '12345', deviceId: 'device-001
 
 const originalFetch = global.fetch
 
-let capturedRequests: { url: string; init?: RequestInit }[] = []
+let capturedRequests: Array<{ url: string, init?: RequestInit }> = []
 
 beforeEach(() => {
   capturedRequests = []
@@ -34,7 +34,7 @@ describe('fetchRegisterDeviceV2 — Cookie header', () => {
 
     expect(capturedRequests).toHaveLength(1)
     const headers = capturedRequests[0]?.init?.headers as Record<string, string>
-    expect(headers['Cookie']).toBe('JSESSIONID=abc123; token=xyz789')
+    expect(headers.Cookie).toBe('JSESSIONID=abc123; token=xyz789')
     expect(result).toBe('reg-42')
   })
 
@@ -50,7 +50,7 @@ describe('fetchRegisterDeviceV2 — Cookie header', () => {
     await fetchRegisterDeviceV2(AUTH, [])
 
     const headers = capturedRequests[0]?.init?.headers as Record<string, string>
-    expect(headers['Cookie']).toBeUndefined()
+    expect(headers.Cookie).toBeUndefined()
   })
 
   it('throws "response is null" on 401 with empty body — the original bug', async () => {
