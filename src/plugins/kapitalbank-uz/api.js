@@ -25,7 +25,7 @@ function getDefaultHeaders () {
     Connection: 'Keep-Alive',
     DeviceId: ZenMoney.getData('deviceId'),
     Host: 'b2c-api.kapitalbank.uz',
-    'User-Agent': 'okhttp/4.12.0',
+    'User-Agent': 'okhttp/5.3.2',
     'X-App-Version': 'Android; ' + appVersion,
     'X-Device-Info': 'Android; 13; samsung; o1s; ' + appVersion + '; XXHDPI; ' + ZenMoney.getData('deviceId'),
     'X-Device-OS': 'ANDROID',
