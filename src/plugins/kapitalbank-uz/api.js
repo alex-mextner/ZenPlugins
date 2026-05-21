@@ -8,8 +8,17 @@ import {
   convertDepositTransaction
 } from './converters'
 
-const appVersion = '3.5.1-build.750release'
+const appVersionFull = '3.5.1-build.750release'
+// Server parses X-App-Version as "Android; X.Y.Z" — strip build suffix (substringBefore "-")
+const appVersion = appVersionFull.split('-')[0]
 const baseUrl = 'https://b2c-api.kapitalbank.uz/api/v1'
+
+function generateUuid () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+  })
+}
 
 function assertVersionSupported (response) {
   if (response.status === 426) {
@@ -26,10 +35,10 @@ function getDefaultHeaders () {
     DeviceId: ZenMoney.getData('deviceId'),
     Host: 'b2c-api.kapitalbank.uz',
     'User-Agent': 'okhttp/5.3.2',
-    'X-App-Version': 'Android; ' + appVersion,
+    'X-App-Version': appVersion,
     'X-Device-Info': 'Android; 13; samsung; o1s; ' + appVersion + '; XXHDPI; ' + ZenMoney.getData('deviceId'),
     'X-Device-OS': 'ANDROID',
-    'X-Trace-Info': 'sessionId=' + ZenMoney.getData('sessionId') + '; requestId=' + ZenMoney.getData('requestId')
+    'X-Trace-Info': 'sessionId=' + ZenMoney.getData('sessionId') + ' requestId=' + generateUuid()
   }
 }
 
@@ -63,7 +72,9 @@ export async function authByPassword (phone, password) {
     headers: getDefaultHeaders(),
     body: {
       phoneNumber: phone,
-      password
+      password,
+      otpSendingSource: 'SMS',
+      applicationId: 'uz.kapitalbank.kbonline'
     },
     sanitizeRequestLog: { body: { phone: true, password: true } }
   })
