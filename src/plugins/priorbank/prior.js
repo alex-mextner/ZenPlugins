@@ -20,6 +20,7 @@ export function assertResponseSuccess (response) {
     ].some(pattern => message.indexOf(pattern) >= 0)) {
       throw new BankMessageError(message)
     }
+    throw new BankMessageError(message)
   }
   console.assert(isSuccessfulResponse(response), 'non-successful response', response)
 }
@@ -54,7 +55,11 @@ export async function getSalt ({ authAccessToken, clientSecret, login }) {
   })
   assertResponseSuccess(response)
 
-  return response.body.result.salt
+  const salt = response.body.result && response.body.result.salt
+  if (!salt) {
+    throw new BankMessageError('GetSalt: salt value not returned by server')
+  }
+  return salt
 }
 
 export const calculatePasswordHash = ({ loginSalt, password }) => {
