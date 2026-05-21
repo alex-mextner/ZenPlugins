@@ -8,7 +8,7 @@ import {
   convertDepositTransaction
 } from './converters'
 
-const appVersion = '3.1.1'
+const appVersion = '3.5.1'
 const baseUrl = 'https://b2c-api.kapitalbank.uz/api/v1'
 
 function getDefaultHeaders () {
