@@ -128,8 +128,9 @@ export async function refreshToken () {
     sanitizeRequestLog: { body: { verificationCode: true, otpCode: true } }
   })
 
-  // todo обработать неверный код подтверждения
-  console.assert(response.ok, 'unexpected auth response', response)
+  if (!response.ok) {
+    throw new TemporaryError('Kapitalbank: ' + (response.body?.errorDetail || response.body?.message || 'Ошибка обновления токена'))
+  }
 
   ZenMoney.setData('guid', response.body.guid)
   ZenMoney.setData('accessToken', response.body.accessToken)
