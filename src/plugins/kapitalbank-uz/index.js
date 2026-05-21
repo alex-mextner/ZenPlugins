@@ -60,13 +60,10 @@ async function blobToBase64WithResolution (blob, targetWidth, targetHeight) {
   console.log('fromBuffer complete')
   const resizedImage = image.resize({ w: targetWidth, h: targetHeight })
   console.log('resize complete')
-  const base64String = await resizedImage.getBase64('image/jpeg')
+  const base64DataUri = await resizedImage.getBase64('image/jpeg')
   console.log('getBase64 complete')
-  // const image = await Image.load(buffer)
-  // const resizedImage = image.resize({ width: targetWidth, height: targetHeight })
-  // const base64String = `data:image/jpeg;base64,${resizedImage.toBase64('image/jpeg')}`
-  // return base64String
-  return base64String
+  // getBase64 returns "data:image/jpeg;base64,<data>" — strip the URI prefix, API expects raw base64
+  return base64DataUri.replace(/^data:[^;]+;base64,/, '')
 }
 
 async function updateToken (phone, password, isResident, pinfl, birthDate) {
