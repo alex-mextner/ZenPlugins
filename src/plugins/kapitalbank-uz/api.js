@@ -157,7 +157,9 @@ export async function myIdIdentify (isResident, pinfl, birthDate, photoFromCamer
     sanitizeRequestLog: { body: { isResident: true, pinfl: true, passportSerial: true, passportNumber: true, birthDate: true, photoFromCamera: true } }
   })
 
-  console.assert(response.ok, 'unexpected myIdIdentify response', response)
+  if (!response.ok) {
+    throw new TemporaryError('Kapitalbank MyID: ' + (response.body?.errorDetail || response.body?.message || 'Ошибка идентификации'))
+  }
 
   return response.body.jobId
 }
