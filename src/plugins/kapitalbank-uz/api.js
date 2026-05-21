@@ -11,6 +11,12 @@ import {
 const appVersion = '3.5.1-build.750release'
 const baseUrl = 'https://b2c-api.kapitalbank.uz/api/v1'
 
+function assertVersionSupported (response) {
+  if (response.status === 426) {
+    throw new TemporaryError('Kapitalbank: ' + (response.body?.errorDetail || response.body?.message || 'Неподдерживаемая версия приложения'))
+  }
+}
+
 function getDefaultHeaders () {
   return {
     'Content-Type': 'application/json',
@@ -43,9 +49,7 @@ export async function authByPhoneNumber (phone) {
     sanitizeRequestLog: { body: { phone: true, password: true } }
   })
 
-  if (response.status === 426) {
-    throw new TemporaryError('Kapitalbank: ' + (response.body?.errorDetail || response.body?.message || 'Неподдерживаемая версия приложения'))
-  }
+  assertVersionSupported(response)
   console.assert(response.ok, 'unexpected auth response', response)
 
   return response.body.exist
@@ -63,6 +67,8 @@ export async function authByPassword (phone, password) {
     },
     sanitizeRequestLog: { body: { phone: true, password: true } }
   })
+
+  assertVersionSupported(response)
 
   // нужно пройти процесс идентификации через myid.uz
   if (response.status === 403) {
