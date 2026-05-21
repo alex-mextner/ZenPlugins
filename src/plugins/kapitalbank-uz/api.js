@@ -169,11 +169,11 @@ export async function myIdVerifyResult (jobId) {
     headers: getDefaultHeaders()
   })
 
-  console.assert(response.ok, 'unexpected myIdVerifyResult response', response)
   if (response.status === 400 || response.status === 404) {
-    return { success: false, ...response.body?.errorDetail }
+    return { success: false, errorDetail: response.body?.errorDetail }
   }
 
+  console.assert(response.ok, 'unexpected myIdVerifyResult response', response)
   return { success: true }
 }
 

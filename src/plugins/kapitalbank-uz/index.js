@@ -5,6 +5,7 @@ import {
   authByPhoneNumber,
   authByPassword,
   verifySmsCode,
+  refreshToken,
   myIdIdentify,
   myIdVerifyResult,
   getCards,
@@ -42,7 +43,11 @@ export async function scrape ({ preferences, fromDate, toDate, isFirstRun }) {
   try {
     return await doScrape(fromDate, toDate)
   } catch {
-    await updateToken(preferences.phone, preferences.password, preferences.isResident, preferences.pinfl, preferences.bday)
+    try {
+      await refreshToken()
+    } catch {
+      await updateToken(preferences.phone, preferences.password, preferences.isResident, preferences.pinfl, preferences.bday)
+    }
     return await doScrape(fromDate, toDate)
   }
 }
@@ -86,7 +91,7 @@ async function updateToken (phone, password, isResident, pinfl, birthDate) {
 async function completeIdentificationOrThrow (isResident, pinfl, birthDate) {
   const photoFromCamera = await ZenMoney.takePicture('jpeg')
   const base64Image = await blobToBase64WithResolution(photoFromCamera, 480, 640)
-  const jobId = await myIdIdentify(isResident, pinfl, birthDate, base64Image)
+  const jobId = await myIdIdentify(isResident === 'true' || isResident === true, pinfl, birthDate, base64Image)
   await delay(2000)
   let verifyResult = await myIdVerifyResult(jobId)
   if (!verifyResult.success) {
