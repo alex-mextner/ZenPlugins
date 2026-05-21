@@ -141,6 +141,11 @@ export async function refreshToken () {
 export async function myIdIdentify (isResident, pinfl, birthDate, photoFromCamera) {
   const endpoint = '/identification/my-id/identify'
 
+  // preferences.xml accepts DDMMYYYY (e.g. "01011990"); API expects yyyy-MM-dd
+  const birthDateIso = birthDate.length === 8
+    ? birthDate.slice(4) + '-' + birthDate.slice(2, 4) + '-' + birthDate.slice(0, 2)
+    : birthDate
+
   const response = await fetchJson(baseUrl + endpoint, {
     method: 'POST',
     headers: getDefaultHeaders(),
@@ -149,7 +154,7 @@ export async function myIdIdentify (isResident, pinfl, birthDate, photoFromCamer
       pinfl,
       passportSerial: null,
       passportNumber: null,
-      birthDate,
+      birthDate: birthDateIso,
       photoFromCamera: {
         front: photoFromCamera
       }
