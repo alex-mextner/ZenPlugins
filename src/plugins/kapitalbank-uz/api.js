@@ -8,7 +8,7 @@ import {
   convertDepositTransaction
 } from './converters'
 
-const appVersion = '3.5.1'
+const appVersion = '3.5.1.750'
 const baseUrl = 'https://b2c-api.kapitalbank.uz/api/v1'
 
 function getDefaultHeaders () {
@@ -43,6 +43,9 @@ export async function authByPhoneNumber (phone) {
     sanitizeRequestLog: { body: { phone: true, password: true } }
   })
 
+  if (response.status === 426) {
+    throw new TemporaryError('Kapitalbank: ' + (response.body?.errorDetail || response.body?.message || 'Неподдерживаемая версия приложения'))
+  }
   console.assert(response.ok, 'unexpected auth response', response)
 
   return response.body.exist
